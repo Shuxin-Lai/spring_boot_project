@@ -1,0 +1,11 @@
+version: "3.2" # optional since v1.27.0
+services:
+  mysql:
+    container_name: "imooc-mall"
+    image: mysql:8.0.16
+    ports:
+      - "3306:3306"
+    volumes:
+      - $PWD/mysqldata:/data
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
