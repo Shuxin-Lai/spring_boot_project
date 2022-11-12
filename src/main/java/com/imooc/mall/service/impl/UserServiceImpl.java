@@ -8,11 +8,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    UserMapper userMapper;
+  @Autowired
+  UserMapper userMapper;
 
-    @Override
-    public User getUser() {
-        return userMapper.selectByPrimaryKey(1);
+  @Override
+  public User getUser() {
+    return userMapper.selectByPrimaryKey(1);
+  }
+
+  @Override
+  public void register(String userName, String password) {
+    User result = this.userMapper.selectByName(userName);
+    if (result != null) {
+      throw new IllegalArgumentException("用户已存在");
     }
+  }
+
 }
