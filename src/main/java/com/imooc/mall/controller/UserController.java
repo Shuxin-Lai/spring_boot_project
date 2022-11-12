@@ -12,9 +12,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/personal")
+    @GetMapping("/test")
     @ResponseBody
     public User personalPage() {
         return userService.getUser();
     }
+
+
 }
