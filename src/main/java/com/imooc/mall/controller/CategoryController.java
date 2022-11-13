@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/category")
@@ -27,10 +28,7 @@ public class CategoryController {
 
   @PostMapping("/admin/add")
   @ResponseBody
-  public ApiRestResponse addCategory(HttpSession session, @RequestBody AddCategoryReq addCategoryReq) {
-    if (addCategoryReq.getName() == null) {
-      return ApiRestResponse.error(ImoocMallExceptionEnum.PARA_NOT_NULL);
-    }
+  public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) {
     User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
     if (currentUser == null) {
       return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);

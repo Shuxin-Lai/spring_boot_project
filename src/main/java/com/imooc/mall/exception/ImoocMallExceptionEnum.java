@@ -15,7 +15,7 @@ public enum ImoocMallExceptionEnum {
   UPDATE_FAILED(10009, "更新失败"),
   NEED_ADMIN(10010, "非管理员账号"),
   PARA_NOT_NULL(10011, "参数不能为空"),
-  NAME_EXISTED(10012, "不允许重名");
+  NAME_EXISTED(10012, "不允许重名"), REQUEST_PARAM_ERROR(10013, "参数异常");
 
   public Integer getCode() {
     return code;
