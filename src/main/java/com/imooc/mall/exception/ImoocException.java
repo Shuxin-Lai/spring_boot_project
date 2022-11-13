@@ -1,6 +1,6 @@
 package com.imooc.mall.exception;
 
-public class ImoocException extends Exception {
+public class ImoocException extends RuntimeException {
   private final Integer code;
   private final String message;
 

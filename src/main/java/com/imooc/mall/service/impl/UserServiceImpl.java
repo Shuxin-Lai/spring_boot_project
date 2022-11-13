@@ -7,7 +7,6 @@ import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import util.MD5Utils;
 
 import java.security.NoSuchAlgorithmException;
@@ -26,7 +25,7 @@ public class UserServiceImpl implements UserService {
   public User login(String userName, String password) throws ImoocException {
     User user = userMapper.selectByName(userName);
     if (user == null) {
-      throw new ImoocException(ImoocMallExceptionEnum.USER_NOT_EXTSTS);
+      throw new ImoocException(ImoocMallExceptionEnum.USER_NOT_EXISTS);
     }
 
     try {
@@ -45,7 +44,7 @@ public class UserServiceImpl implements UserService {
   public void register(String userName, String password) throws ImoocException {
     User result = this.userMapper.selectByName(userName);
     if (result != null) {
-      throw new ImoocException(ImoocMallExceptionEnum.USER_EXSISTED);
+      throw new ImoocException(ImoocMallExceptionEnum.USER_EXISTED);
     }
     User user = new User();
     user.setUsername(userName);
