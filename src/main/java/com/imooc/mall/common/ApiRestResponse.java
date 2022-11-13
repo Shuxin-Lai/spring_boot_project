@@ -2,10 +2,13 @@ package com.imooc.mall.common;
 
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 
+import java.util.Date;
+
 public class ApiRestResponse<T> {
   private final Integer status;
   private final String message;
   private T data;
+  private Long timestamp;
 
   private static final int OK_CODE = 10000;
   private static final String OK_MSG = "SUCCESS";
@@ -14,6 +17,7 @@ public class ApiRestResponse<T> {
     this.status = status;
     this.message = message;
     this.data = data;
+    this.timestamp = new Date().getTime();
   }
 
   public ApiRestResponse(T data) {
@@ -21,8 +25,7 @@ public class ApiRestResponse<T> {
   }
 
   public ApiRestResponse(Integer status, String message) {
-    this.status = status;
-    this.message = message;
+    this(status, message, null);
   }
 
   public ApiRestResponse() {
@@ -51,6 +54,14 @@ public class ApiRestResponse<T> {
 
   public String getMessage() {
     return message;
+  }
+
+  public Long getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(Long timestamp) {
+    this.timestamp = timestamp;
   }
 
   public T getData() {

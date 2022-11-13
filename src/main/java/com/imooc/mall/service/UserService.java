@@ -1,10 +1,16 @@
 package com.imooc.mall.service;
 
+import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.model.pojo.User;
-import org.springframework.stereotype.Service;
 
 public interface UserService {
     User getUser();
 
-    void register(String userName, String password);
+    void register(String userName, String password) throws ImoocException;
+
+    User login(String userName, String password) throws ImoocException;
+
+    void updateInformation(User user) throws ImoocException;
+
+    boolean checkAdmin(User user);
 }
