@@ -1,7 +1,6 @@
 package com.imooc.mall.model.vo;
 
-import com.imooc.mall.model.pojo.Category;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,15 +19,15 @@ public class CategoryVO {
 
   private Date updateTime;
 
-  public List<CategoryVO> getList() {
-    return list;
+  public List<CategoryVO> getChildCategories() {
+    return childCategories;
   }
 
-  public void setList(List<CategoryVO> list) {
-    this.list = list;
+  public void setChildCategories(List<CategoryVO> childCategories) {
+    this.childCategories = childCategories;
   }
 
-  private List<CategoryVO> list;
+  private List<CategoryVO> childCategories = new ArrayList<>();
 
   public Integer getId() {
     return id;

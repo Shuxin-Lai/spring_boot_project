@@ -7,11 +7,14 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.CategoryMapper;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.category.AddCategoryReq;
+import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,9 +43,33 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public PageInfo listCategoryForAdmin(Integer pageNum, Integer pageSize) {
-    PageHelper.startPage(pageNum, pageSize);
+  public PageInfo listCategoriesForAdmin(Integer pageNum, Integer pageSize) {
+    PageHelper.startPage(pageNum, pageSize, "type,order_num");
     List<Category> categories = categoryMapper.selectList();
     return new PageInfo(categories);
+  }
+
+  @Override
+  public List<CategoryVO> listCategoriesForCustomer(Integer parentId) {
+    List<CategoryVO> res = new ArrayList<>();
+    recursivelyFindCategories(res, parentId);
+    return res;
+  }
+
+  private void recursivelyFindCategories(List<CategoryVO> categoryVOList, Integer parentId) {
+    List<Category> categories = categoryMapper.selectListByParentId(parentId);
+
+    if (CollectionUtils.isEmpty(categories)) {
+      return;
+    }
+
+    for (Category category : categories) {
+      CategoryVO categoryVO = new CategoryVO();
+      BeanUtils.copyProperties(category, categoryVO);
+
+      recursivelyFindCategories(categoryVO.getChildCategories(), categoryVO.getId());
+
+      categoryVOList.add(categoryVO);
+    }
   }
 }
