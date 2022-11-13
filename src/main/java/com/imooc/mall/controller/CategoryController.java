@@ -1,5 +1,6 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -7,13 +8,11 @@ import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.request.category.AddCategoryReq;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -38,5 +37,22 @@ public class CategoryController {
   @ResponseBody
   public ApiRestResponse addCategory(@RequestBody AddCategoryReq addCategoryReq) {
     return ApiRestResponse.success();
+  }
+
+
+  @PostMapping("/admin/category/delete/{id}")
+  @ResponseBody
+  public ApiRestResponse removeCategory(@PathVariable("id") Integer id) {
+    categoryService.delete(id);
+
+    return ApiRestResponse.success();
+  }
+
+  @GetMapping("/admin/category/list")
+  @ResponseBody
+  public ApiRestResponse categoryListForAdmin(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                              @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+    PageInfo pageInfo = categoryService.listCategoryForAdmin(pageNum, pageSize);
+    return ApiRestResponse.success(pageInfo);
   }
 }
