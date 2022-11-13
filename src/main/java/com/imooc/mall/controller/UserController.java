@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller()
-@RequestMapping("/user")
 public class UserController {
   @Autowired
   UserService userService;
@@ -25,7 +24,7 @@ public class UserController {
     return userService.getUser();
   }
 
-  @PostMapping("/register")
+  @PostMapping("/user/register")
   @ResponseBody
   public ApiRestResponse register(@RequestParam("userName") String userName,
                                   @RequestParam("password") String password) throws ImoocException {
@@ -42,7 +41,7 @@ public class UserController {
     return ApiRestResponse.success();
   }
 
-  @PostMapping("/login")
+  @PostMapping("/user/login")
   @ResponseBody
   public ApiRestResponse login(@RequestParam("userName") String userName,
                                @RequestParam("password") String password, HttpSession session) throws ImoocException {
@@ -59,7 +58,7 @@ public class UserController {
     return ApiRestResponse.success(user);
   }
 
-  @PostMapping("/admin_login")
+  @PostMapping("/admin/login")
   @ResponseBody
   public ApiRestResponse adminLogin(@RequestParam("userName") String userName,
                                @RequestParam("password") String password, HttpSession session) throws ImoocException {
@@ -79,7 +78,7 @@ public class UserController {
     return ApiRestResponse.success(user);
   }
 
-  @PostMapping("/update")
+  @PostMapping("/user/update")
   @ResponseBody
   public ApiRestResponse updateUser(HttpSession session, @RequestParam String signature) throws ImoocException {
     User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
@@ -93,7 +92,7 @@ public class UserController {
     return ApiRestResponse.success();
   }
 
-  @PostMapping("/logout")
+  @PostMapping("/user/logout")
   @ResponseBody
   public ApiRestResponse logout(HttpSession session) {
     session.removeAttribute(Constant.IMOOC_MALL_USER);

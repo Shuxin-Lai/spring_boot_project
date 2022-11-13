@@ -5,7 +5,7 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import java.util.Date;
 
 public class ApiRestResponse<T> {
-  private final Integer status;
+  private final Integer code;
   private final String message;
   private T data;
   private Long timestamp;
@@ -13,8 +13,8 @@ public class ApiRestResponse<T> {
   private static final int OK_CODE = 10000;
   private static final String OK_MSG = "SUCCESS";
 
-  public ApiRestResponse(Integer status, String message, T data) {
-    this.status = status;
+  public ApiRestResponse(Integer code, String message, T data) {
+    this.code = code;
     this.message = message;
     this.data = data;
     this.timestamp = new Date().getTime();
@@ -24,8 +24,8 @@ public class ApiRestResponse<T> {
     this(OK_CODE, OK_MSG, data);
   }
 
-  public ApiRestResponse(Integer status, String message) {
-    this(status, message, null);
+  public ApiRestResponse(Integer code, String message) {
+    this(code, message, null);
   }
 
   public ApiRestResponse() {
@@ -48,8 +48,8 @@ public class ApiRestResponse<T> {
     return new ApiRestResponse<>(e.getCode(), e.getMessage());
   }
 
-  public Integer getStatus() {
-    return status;
+  public Integer getCode() {
+    return code;
   }
 
   public String getMessage() {
@@ -75,7 +75,7 @@ public class ApiRestResponse<T> {
   @Override
   public String toString() {
     return "ApiRestResponse{" +
-        "status=" + status +
+        "status=" + code +
         ", message='" + message + '\'' +
         ", data=" + data +
         '}';

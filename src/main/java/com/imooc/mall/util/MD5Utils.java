@@ -1,4 +1,4 @@
-package util;
+package com.imooc.mall.util;
 
 import com.imooc.mall.common.Constant;
 import org.apache.tomcat.util.codec.binary.Base64;

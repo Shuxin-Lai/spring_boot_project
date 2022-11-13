@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/category")
 public class CategoryController {
   @Autowired
   UserService userService;
@@ -27,20 +26,17 @@ public class CategoryController {
   @Autowired
   CategoryService categoryService;
 
-  @ApiOperation("后台添加商品目录")
-  @PostMapping("/admin/add")
+  @PostMapping("/admin/category/add")
   @ResponseBody
   public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) {
     User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
-    if (currentUser == null) {
-      return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);
-    }
-    if (!userService.checkAdmin(currentUser)) {
-      return ApiRestResponse.error((ImoocMallExceptionEnum.NEED_ADMIN));
-    }
-
     categoryService.add(addCategoryReq);
+    return ApiRestResponse.success();
+  }
 
+  @PostMapping("/admin/category/update")
+  @ResponseBody
+  public ApiRestResponse addCategory(@RequestBody AddCategoryReq addCategoryReq) {
     return ApiRestResponse.success();
   }
 }

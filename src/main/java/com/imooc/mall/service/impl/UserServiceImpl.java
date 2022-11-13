@@ -7,7 +7,7 @@ import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import util.MD5Utils;
+import com.imooc.mall.util.MD5Utils;
 
 import java.security.NoSuchAlgorithmException;
 
