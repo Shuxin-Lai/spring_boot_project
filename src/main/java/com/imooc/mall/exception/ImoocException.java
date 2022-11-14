@@ -13,6 +13,18 @@ public class ImoocException extends RuntimeException {
     this(e.getCode(), e.getMessage());
   }
 
+  public static void throwInsertError() {
+    throw new ImoocException(ImoocMallExceptionEnum.INSERT_FAILED);
+  }
+
+  public static void throwUpdateError() {
+    throw new ImoocException(ImoocMallExceptionEnum.UPDATE_FAILED);
+  }
+
+  public static void throwNameExisted() {
+    throw new ImoocException(ImoocMallExceptionEnum.NAME_EXISTED);
+  }
+
   @Override
   public String toString() {
     return "ImoocException{" +
