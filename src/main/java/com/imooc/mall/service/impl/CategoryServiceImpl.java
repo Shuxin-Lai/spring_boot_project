@@ -15,8 +15,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -72,6 +71,31 @@ public class CategoryServiceImpl implements CategoryService {
       recursivelyFindCategories(categoryVO.getChildCategories(), categoryVO.getId());
 
       categoryVOList.add(categoryVO);
+    }
+  }
+
+  @Override
+  public List<Integer> getCategoryIds(Integer parentId) {
+    HashSet<Integer> integers = new HashSet<>();
+    recursivelyFindCategoryId(parentId, integers);
+    return new ArrayList<>(integers);
+  }
+
+  private void recursivelyFindCategoryId(Integer parentId, Set<Integer> set) {
+    if (set.contains(parentId)) {
+      return;
+    }
+
+    set.add(parentId);
+    List<Category> categories = categoryMapper.selectListByParentId(parentId);
+
+    if (CollectionUtils.isEmpty(categories)) {
+      return;
+    }
+
+    for (Category category : categories) {
+      Integer id = category.getId();
+      recursivelyFindCategoryId(id, set);
     }
   }
 }

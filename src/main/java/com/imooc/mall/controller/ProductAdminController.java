@@ -1,9 +1,12 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
+import com.imooc.mall.model.pojo.Product;
+import com.imooc.mall.model.request.base.Pagination;
 import com.imooc.mall.model.request.product.AddProductReq;
 import com.imooc.mall.model.request.product.UpdateProductReq;
 import com.imooc.mall.service.ProductService;
@@ -22,7 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-@Controller
+@RestController
 public class ProductAdminController {
   @Autowired
   ProductService productService;
@@ -46,6 +49,14 @@ public class ProductAdminController {
   public ApiRestResponse deleteProduct(@PathVariable("id") Integer id) {
     productService.delete(id);
     return ApiRestResponse.success();
+  }
+
+  @GetMapping("/admin/product/list")
+  public ApiRestResponse getProductList(Pagination pagination) {
+    Integer pageNum = pagination.getPageNum();
+    Integer pageSize = pagination.getPageSize();
+    PageInfo<Product> productPageInfo = productService.listForAdmin(pageNum, pageSize);
+    return ApiRestResponse.success(productPageInfo);
   }
 
   @PostMapping("/admin/product/batch_update_sell_status")
