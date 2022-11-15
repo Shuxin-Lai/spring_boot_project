@@ -1,21 +1,21 @@
-package com.imooc.mall.model.request.category;
+package com.imooc.mall.model.request.product;
+
+import reactor.util.annotation.Nullable;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class AddProductReq {
+public class UpdateProductReq {
+  @Nullable
+  private Integer id;
 
-  @NotNull
   private String name;
 
-  @NotNull
   private String image;
 
-  @NotNull
   private String detail;
 
-  @NotNull
   private Integer categoryId;
 
   @Min(0)
@@ -26,6 +26,14 @@ public class AddProductReq {
   private Integer stock;
 
   private Integer status;
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
   public String getName() {
     return name;

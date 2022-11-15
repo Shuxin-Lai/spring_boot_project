@@ -4,16 +4,14 @@ import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
-import com.imooc.mall.model.request.category.AddProductReq;
+import com.imooc.mall.model.request.product.AddProductReq;
+import com.imooc.mall.model.request.product.UpdateProductReq;
 import com.imooc.mall.service.ProductService;
-import io.swagger.annotations.Api;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +31,28 @@ public class ProductAdminController {
   @ResponseBody
   public ApiRestResponse addProduct(@Valid @RequestBody AddProductReq addProductReq) {
     productService.adminAddProduct(addProductReq);
+    return ApiRestResponse.success();
+  }
+
+  @PostMapping("/admin/product/update")
+  @ResponseBody
+  public ApiRestResponse updateProduct(@Valid @RequestBody UpdateProductReq updateProductReq) {
+    productService.update(updateProductReq);
+    return ApiRestResponse.success();
+  }
+
+  @DeleteMapping("/admin/product/delete/{id}")
+  @ResponseBody
+  public ApiRestResponse deleteProduct(@PathVariable("id") Integer id) {
+    productService.delete(id);
+    return ApiRestResponse.success();
+  }
+
+  @PostMapping("/admin/product/batch_update_sell_status")
+  @ResponseBody
+  public ApiRestResponse batchUpdateSellStatus(@RequestParam("ids") Integer [] ids,
+                                               @RequestParam("sell_status")Integer sellStatus) {
+    productService.batchUpdateSellStatus(ids, sellStatus);
     return ApiRestResponse.success();
   }
 

@@ -1,13 +1,15 @@
 package com.imooc.mall.service;
 
-import com.github.pagehelper.PageInfo;
-import com.imooc.mall.model.request.category.AddCategoryReq;
-import com.imooc.mall.model.request.category.AddProductReq;
-import com.imooc.mall.model.vo.CategoryVO;
-
-import java.util.List;
+import com.imooc.mall.model.request.product.AddProductReq;
+import com.imooc.mall.model.request.product.UpdateProductReq;
 
 public interface ProductService {
 
   void adminAddProduct(AddProductReq addProductReq);
+
+  void update(UpdateProductReq updateProductReq);
+
+  void delete(Integer id);
+
+  int batchUpdateSellStatus(Integer[] ids, Integer sellStatus);
 }

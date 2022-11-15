@@ -23,7 +23,8 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectByName" resultType="com.imooc.mall.model.pojo.Product" parameterType="java.lang.String">
-    select <include refid="Base_Column_List"></include>
+    select
+    <include refid="Base_Column_List"></include>
     from imooc_mall_product
     where name = #{name}
   </select>
@@ -154,5 +155,14 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="batchUpdateSellStatus">
+    update imooc_mall_product
+    set status = #{sellStatus}
+    where id in
+    <foreach collection="ids" open="(" close=")" separator="," item="id">
+      #{id}
+    </foreach>
   </update>
 </mapper>

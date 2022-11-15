@@ -17,6 +17,10 @@ public class ImoocException extends RuntimeException {
     throw new ImoocException(ImoocMallExceptionEnum.INSERT_FAILED);
   }
 
+  public static void throwDeleteError() {
+    throw new ImoocException(ImoocMallExceptionEnum.DELETE_FAILED);
+  }
+
   public static void throwUpdateError() {
     throw new ImoocException(ImoocMallExceptionEnum.UPDATE_FAILED);
   }
