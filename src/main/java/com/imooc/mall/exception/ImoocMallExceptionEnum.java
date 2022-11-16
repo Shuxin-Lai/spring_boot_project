@@ -18,7 +18,11 @@ public enum ImoocMallExceptionEnum {
   NAME_EXISTED(10012, "不允许重名"),
   REQUEST_PARAM_ERROR(10013, "参数异常"),
   DELETE_FAILED(10014, "删除失败"),
-  MKDIR_FAILED(10015, "创建文件夹失败"), UPLOAD_FAILED(10016, "文件上传失败");
+  MKDIR_FAILED(10015, "创建文件夹失败"),
+  UPLOAD_FAILED(10016, "文件上传失败"),
+  PRODUCT_NOT_EXISTS(10017, "商品不存在"),
+  PRODUCT_NOT_SALE(10018, "商品状态异常"),
+  PRODUCT_OUT_OK_STOCK(10018, "Out of stock");
 
   public Integer getCode() {
     return code;
