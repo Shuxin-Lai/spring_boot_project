@@ -3,6 +3,7 @@ package com.imooc.mall.exception;
 import com.imooc.mall.common.ApiRestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -25,6 +26,14 @@ public class GlobalExceptionHandler {
     logger.error("Default Exception: ", e);
     return ApiRestResponse.error(ImoocMallExceptionEnum.SYSTEM_ERROR);
   }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  @ResponseBody
+  public Object handleMessageNotReadableException(HttpMessageNotReadableException e) {
+    logger.error("Default Exception: ", e);
+    return ApiRestResponse.error(ImoocMallExceptionEnum.PARA_ERROR);
+  }
+
 
   @ExceptionHandler(ImoocException.class)
   @ResponseBody

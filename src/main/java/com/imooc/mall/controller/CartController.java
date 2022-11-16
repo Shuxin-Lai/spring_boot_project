@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cart")
@@ -23,11 +24,11 @@ public class CartController {
   @Autowired
   CartService cartService;
 
-//  @PostMapping("/add")
-//  public ApiRestResponse addCart(AddCartReq addCartReq) {
-//    Integer userId = UserFilter.currentUser.getId();
-//
-//    cartService.addCart(userId, addCartReq);
-//    return ApiRestResponse.success();
-//  }
+  @PostMapping("/add")
+  public ApiRestResponse addCart(@Valid @RequestBody AddCartReq addCartReq) {
+    Integer userId = UserFilter.currentUser.getId();
+
+    cartService.addCart(userId, addCartReq);
+    return ApiRestResponse.success();
+  }
 }
