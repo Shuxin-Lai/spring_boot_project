@@ -45,7 +45,7 @@ public class CartServiceImpl implements CartService {
 
       cartMapper.insertSelective(cart);
     }
-    return null;
+    return list(userId);
   }
 
   private void validProduct(Integer productId, Integer count) {
@@ -63,5 +63,14 @@ public class CartServiceImpl implements CartService {
     }
   }
 
+  @Override
+  public List<CartVO> list(Integer userId) {
+    List<CartVO> cartVOS = cartMapper.selectList(userId);
 
+    for (CartVO c : cartVOS) {
+      c.setTotalPrice(c.getPrice() * c.getQuantity());
+    }
+
+    return cartVOS;
+  }
 }
