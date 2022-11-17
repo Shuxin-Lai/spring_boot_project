@@ -44,6 +44,16 @@
     and p.status = 1
   </select>
 
+  <select id="selectOrNotSelect" parameterType="map">
+    update imooc_mall_cart
+    set selected = #{selected}
+    where user_id = #{userId}
+    <if test="productId != null">
+      and product_id = #{productId}
+    </if>
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from imooc_mall_cart
     where id = #{id,jdbcType=INTEGER}
