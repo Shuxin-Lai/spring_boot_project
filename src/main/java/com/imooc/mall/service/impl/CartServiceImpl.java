@@ -65,6 +65,7 @@ public class CartServiceImpl implements CartService {
     }
   }
 
+  // 返回用户已勾选的商品列表
   @Override
   public List<CartVO> list(Integer userId) {
     List<CartVO> cartVOS = cartMapper.selectList(userId);

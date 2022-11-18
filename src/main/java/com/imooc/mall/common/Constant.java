@@ -1,6 +1,8 @@
 package com.imooc.mall.common;
 
 import com.google.common.collect.Sets;
+import com.imooc.mall.exception.ImoocException;
+import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,5 +33,36 @@ public class Constant {
   public interface Cart {
     int CHECKED = 1;
     int UN_CHECKED = 0;
+  }
+
+  public enum OrderStatusEmum {
+    CANCELED(0, "用户已取消"),
+    NOT_PAID(10, "未付款"),
+    PAID(20, "已付款"),
+    DELIVERED(30, "已发货"),
+    FULFILLED(40, "已完成");
+
+    private final String value;
+    private final int code;
+
+    OrderStatusEmum(int code, String value) {
+      this.value = value;
+      this.code = code;
+    }
+
+    public static OrderStatusEmum codeOf(int code) {
+      for (OrderStatusEmum o : OrderStatusEmum.values()) {
+        if (o.code == code) return o;
+      }
+      throw new ImoocException(ImoocMallExceptionEnum.NO_ENUM);
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public int getCode() {
+      return code;
+    }
   }
 }

@@ -22,7 +22,12 @@ public enum ImoocMallExceptionEnum {
   UPLOAD_FAILED(10016, "文件上传失败"),
   PRODUCT_NOT_EXISTS(10017, "商品不存在"),
   PRODUCT_NOT_SALE(10018, "商品状态异常"),
-  PRODUCT_OUT_OK_STOCK(10018, "商品库存不足"), PARA_ERROR(10019, "参数错误"), CART_NOT_EXISTED(10020, "找不到购物车");
+  PRODUCT_OUT_OK_STOCK(10018, "商品库存不足"),
+  PARA_ERROR(10019, "参数错误"),
+  CART_NOT_EXISTED(10020, "找不到购物车"),
+  CART_EMPTY(10021, "购物车没有勾选的商品"),
+  CART_NOT_SELECTED(10022, "商品未选中"),
+  NO_ENUM(10023, "枚举不存在");
 
   public Integer getCode() {
     return code;
