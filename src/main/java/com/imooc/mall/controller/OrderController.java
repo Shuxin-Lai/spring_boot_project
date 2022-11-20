@@ -13,7 +13,7 @@ public class OrderController {
   @Autowired
   OrderService orderService;
 
-  @PostMapping("/order/craete")
+  @PostMapping("/order/create")
   public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq) {
 
     String orderNo = orderService.create(createOrderReq);

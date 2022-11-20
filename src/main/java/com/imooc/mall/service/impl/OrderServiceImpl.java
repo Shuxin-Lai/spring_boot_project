@@ -18,6 +18,7 @@ import com.imooc.mall.service.OrderService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
   @Autowired
   OrderItemMapper orderItemMapper;
 
+  @Transactional(rollbackFor = Exception.class)
   @Override
   public String create(CreateOrderReq createOrderReq) {
     // 获取用户 id,
