@@ -1,5 +1,7 @@
 package com.imooc.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -11,6 +13,7 @@ import com.imooc.mall.model.dao.ProductMapper;
 import com.imooc.mall.model.pojo.Order;
 import com.imooc.mall.model.pojo.OrderItem;
 import com.imooc.mall.model.pojo.Product;
+import com.imooc.mall.model.request.base.Pagination;
 import com.imooc.mall.model.request.order.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
 import com.imooc.mall.model.vo.OrderItemVO;
@@ -125,6 +128,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     return getOrderVO(order);
+  }
+
+  @Override
+  public PageInfo listForCustomer(Pagination pagination) {
+    Integer pageNum = pagination.getPageNum();
+    Integer pageSize = pagination.getPageSize();
+    Integer userId = UserFilter.currentUser.getId();
+    PageHelper.startPage(pageNum, pageNum, "create_time");
+
+    List<Order> orderList = orderMapper.selectForCustomer(userId);
+    List<OrderVO> orderVOList = transformOrderListToOrderVOList(orderList);
+
+    PageInfo pageInfo = new PageInfo(orderList);
+    pageInfo.setList(orderVOList);
+    return pageInfo;
+  }
+
+  private List<OrderVO> transformOrderListToOrderVOList(List<Order> orderList) {
+    List<OrderVO> list = new ArrayList<>();
+    for (Order order : orderList) {
+      OrderVO orderVO = getOrderVO(order);
+      list.add(orderVO);
+    }
+    return list;
   }
 
   public OrderVO getOrderVO(Order order) {

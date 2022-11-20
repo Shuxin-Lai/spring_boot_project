@@ -1,6 +1,8 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
+import com.imooc.mall.model.request.base.Pagination;
 import com.imooc.mall.model.request.order.CreateOrderReq;
 import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.OrderService;
@@ -23,5 +25,11 @@ public class OrderController {
   public ApiRestResponse detail(@RequestParam("orderNo") String orderNo) {
     OrderVO orderVO = orderService.detail(orderNo);
     return ApiRestResponse.success(orderVO);
+  }
+
+  @GetMapping("/order/list")
+  public ApiRestResponse list(Pagination pagination) {
+    PageInfo pageInfo = orderService.listForCustomer(pagination);
+    return ApiRestResponse.success(pageInfo);
   }
 }
