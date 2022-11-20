@@ -29,6 +29,14 @@
     from imooc_mall_order
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByOrderNo" resultType="com.imooc.mall.model.pojo.Order" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"></include>
+    from imooc_mall_order
+    where order_no = #{orderNo}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from imooc_mall_order
     where id = #{id,jdbcType=INTEGER}

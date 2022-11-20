@@ -27,7 +27,9 @@ public enum ImoocMallExceptionEnum {
   CART_NOT_EXISTED(10020, "找不到购物车"),
   CART_EMPTY(10021, "购物车没有勾选的商品"),
   CART_NOT_SELECTED(10022, "商品未选中"),
-  NO_ENUM(10023, "枚举不存在");
+  NO_ENUM(10023, "枚举不存在"),
+  NO_ORDER(10024, "订单不存在"),
+  NOT_YOUR_ORDER(10025, "此订单并非您的");
 
   public Integer getCode() {
     return code;

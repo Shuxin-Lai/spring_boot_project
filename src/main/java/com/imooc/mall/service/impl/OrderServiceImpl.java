@@ -13,9 +13,12 @@ import com.imooc.mall.model.pojo.OrderItem;
 import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.order.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
+import com.imooc.mall.model.vo.OrderItemVO;
+import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
 import io.swagger.models.auth.In;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,6 +114,36 @@ public class OrderServiceImpl implements OrderService {
     return order.getOrderNo();
   }
 
+  @Override
+  public OrderVO detail(String orderNo) {
+    Order order = orderMapper.selectByOrderNo(orderNo);
+    if (order == null) {
+      throw new ImoocException(ImoocMallExceptionEnum.NO_ORDER);
+    }
+    if (!order.getUserId().equals(UserFilter.currentUser.getId())) {
+      throw new ImoocException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+    }
+
+    return getOrderVO(order);
+  }
+
+  public OrderVO getOrderVO(Order order) {
+    OrderVO orderVO = new OrderVO();
+    BeanUtils.copyProperties(order, orderVO);
+    List<OrderItemVO> list = new ArrayList<>();
+    List<OrderItem> orderItemList = orderItemMapper.selectByOrderINo(order.getOrderNo());
+    for (OrderItem orderItem : orderItemList) {
+      OrderItemVO orderItemVO = new OrderItemVO();
+      BeanUtils.copyProperties(orderItem, orderItemVO);
+      list.add(orderItemVO);
+//      orderItemVO.setOrderStatusName(Constant.OrderStatusEmum.codeOf(orderVO.getOrderStatus()).getValue());
+    }
+
+    orderVO.setOrderItemVOList(list);
+    orderVO.setOrderStatusName(Constant.OrderStatusEmum.codeOf(orderVO.getOrderStatus()).getValue());
+    return orderVO;
+  }
+
   private Integer getTotalPrice(List<OrderItem> orderItemList) {
     int total = 0;
     for (OrderItem orderItem : orderItemList) {
@@ -139,7 +172,6 @@ public class OrderServiceImpl implements OrderService {
 
       orderItemList.add(orderItem);
     }
-
 
     return orderItemList;
   }
