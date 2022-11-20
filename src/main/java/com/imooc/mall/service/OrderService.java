@@ -16,4 +16,6 @@ public interface OrderService {
   OrderVO detail(String orderNo);
 
   PageInfo listForCustomer(Pagination pagination);
+
+  void cancel(String orderNo);
 }

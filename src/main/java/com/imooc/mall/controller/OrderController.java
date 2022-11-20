@@ -32,4 +32,10 @@ public class OrderController {
     PageInfo pageInfo = orderService.listForCustomer(pagination);
     return ApiRestResponse.success(pageInfo);
   }
+
+  @PostMapping("/order/cancel")
+  public ApiRestResponse cancel(@RequestParam("orderNo") String orderNo) {
+    orderService.cancel(orderNo);
+    return ApiRestResponse.success();
+  }
 }

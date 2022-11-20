@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -171,6 +172,26 @@ public class OrderServiceImpl implements OrderService {
     return orderVO;
   }
 
+  @Override
+  public void cancel(String orderNo) {
+    Order order = orderMapper.selectByOrderNo(orderNo);
+    if (order == null) {
+      throw new ImoocException(ImoocMallExceptionEnum.NO_ORDER);
+    }
+
+    if (!order.getUserId().equals(UserFilter.currentUser.getId())) {
+      throw new ImoocException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+    }
+
+    if (!order.getOrderStatus().equals(Constant.OrderStatusEmum.NOT_PAID.getCode())) {
+      throw new ImoocException(ImoocMallExceptionEnum.ORDER_STATUS_ERROR);
+    }
+
+    order.setOrderStatus(Constant.OrderStatusEmum.CANCELED.getCode());
+    order.setEndTime(new Date());
+    orderMapper.updateByPrimaryKeySelective(order);
+  }
+
   private Integer getTotalPrice(List<OrderItem> orderItemList) {
     int total = 0;
     for (OrderItem orderItem : orderItemList) {
@@ -218,5 +239,4 @@ public class OrderServiceImpl implements OrderService {
       }
     }
   }
-
 }
