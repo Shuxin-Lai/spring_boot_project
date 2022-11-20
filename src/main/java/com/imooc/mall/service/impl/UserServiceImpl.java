@@ -1,13 +1,18 @@
 package com.imooc.mall.service.impl;
 
+import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.UserMapper;
 import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.service.UserService;
+import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import com.imooc.mall.util.MD5Utils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -69,6 +74,14 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean checkAdmin(User user) {
+    if (user == null) return false;
     return user.getRole().equals(2);
+  }
+
+  @Override
+  public User getCurrentUserFromSession() {
+    ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    assert attributes != null;
+    return (User) attributes.getRequest().getSession().getAttribute(Constant.IMOOC_MALL_USER);
   }
 }

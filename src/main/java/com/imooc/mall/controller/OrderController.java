@@ -47,4 +47,16 @@ public class OrderController {
     String url = orderService.qrcode(orderNo);
     return ApiRestResponse.success(url);
   }
+
+  @PostMapping("/order/pay")
+  public ApiRestResponse pay(@RequestParam("orderNo") String orderNo) {
+    orderService.pay(orderNo);
+    return ApiRestResponse.success();
+  }
+
+  @PostMapping("/order/finish")
+  public ApiRestResponse finish(@RequestParam("orderNo") String orderNo) {
+    orderService.fulfill(orderNo);
+    return ApiRestResponse.success();
+  }
 }

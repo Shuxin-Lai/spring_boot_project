@@ -13,4 +13,6 @@ public interface UserService {
     void updateInformation(User user) throws ImoocException;
 
     boolean checkAdmin(User user);
+
+    User getCurrentUserFromSession();
 }

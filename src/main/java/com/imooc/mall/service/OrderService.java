@@ -17,7 +17,15 @@ public interface OrderService {
 
   PageInfo listForCustomer(Pagination pagination);
 
+  PageInfo listForAdmin(Pagination pagination);
+
   void cancel(String orderNo);
 
   String qrcode(String orderNo);
+
+  void pay(String orderNo);
+
+  void deliver(String orderNo);
+
+  void fulfill(String orderNo);
 }

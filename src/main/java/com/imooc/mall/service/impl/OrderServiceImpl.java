@@ -2,7 +2,6 @@ package com.imooc.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.zxing.WriterException;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -14,6 +13,7 @@ import com.imooc.mall.model.dao.ProductMapper;
 import com.imooc.mall.model.pojo.Order;
 import com.imooc.mall.model.pojo.OrderItem;
 import com.imooc.mall.model.pojo.Product;
+import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.request.base.Pagination;
 import com.imooc.mall.model.request.order.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
@@ -21,8 +21,8 @@ import com.imooc.mall.model.vo.OrderItemVO;
 import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
+import com.imooc.mall.service.UserService;
 import com.imooc.mall.util.QRCodeGenerator;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,11 +33,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +50,8 @@ public class OrderServiceImpl implements OrderService {
   OrderMapper orderMapper;
   @Autowired
   OrderItemMapper orderItemMapper;
+  @Autowired
+  UserService userService;
 
   @Value("${server.baseUrl}")
   String serverBaseUrl;
@@ -150,9 +148,23 @@ public class OrderServiceImpl implements OrderService {
     Integer pageNum = pagination.getPageNum();
     Integer pageSize = pagination.getPageSize();
     Integer userId = UserFilter.currentUser.getId();
-    PageHelper.startPage(pageNum, pageNum, "create_time");
+    PageHelper.startPage(pageNum, pageSize, "create_time");
 
     List<Order> orderList = orderMapper.selectForCustomer(userId);
+    List<OrderVO> orderVOList = transformOrderListToOrderVOList(orderList);
+
+    PageInfo pageInfo = new PageInfo(orderList);
+    pageInfo.setList(orderVOList);
+    return pageInfo;
+  }
+
+  @Override
+  public PageInfo listForAdmin(Pagination pagination) {
+    Integer pageNum = pagination.getPageNum();
+    Integer pageSize = pagination.getPageSize();
+    PageHelper.startPage(pageNum, pageSize, "create_time");
+
+    List<Order> orderList = orderMapper.selectForAdmin();
     List<OrderVO> orderVOList = transformOrderListToOrderVOList(orderList);
 
     PageInfo pageInfo = new PageInfo(orderList);
@@ -220,6 +232,49 @@ public class OrderServiceImpl implements OrderService {
     }
     String imgUrl = serverBaseUrl + "/images/" + orderNo + ".png";
     return imgUrl;
+  }
+
+  @Override
+  public void pay(String orderNo) {
+    Order order = getOrder(orderNo);
+
+    if (order.getOrderStatus().equals(Constant.OrderStatusEmum.NOT_PAID.getCode())) {
+
+      order.setOrderStatus(Constant.OrderStatusEmum.PAID.getCode());
+      order.setPayTime(new Date());
+      orderMapper.updateByPrimaryKeySelective(order);
+    } else {
+      throw new ImoocException(ImoocMallExceptionEnum.ORDER_STATUS_ERROR);
+    }
+
+  }
+
+  @Override
+  public void deliver(String orderNo) {
+    Order order = getOrder(orderNo, false);
+
+    if (!order.getOrderStatus().equals(Constant.OrderStatusEmum.PAID.getCode())) {
+      throw new ImoocException(ImoocMallExceptionEnum.ORDER_STATUS_ERROR);
+    }
+    order.setOrderStatus(Constant.OrderStatusEmum.DELIVERED.getCode());
+    order.setDeliveryTime(new Date());
+    orderMapper.updateByPrimaryKeySelective(order);
+  }
+
+  @Override
+  public void fulfill(String orderNo) {
+    User user = userService.getCurrentUserFromSession();
+
+    boolean isAdmin = userService.checkAdmin(user);
+    Order order = getOrder(orderNo, !isAdmin);
+
+    if (!order.getOrderStatus().equals(Constant.OrderStatusEmum.DELIVERED.getCode())) {
+      throw new ImoocException(ImoocMallExceptionEnum.ORDER_STATUS_ERROR);
+    }
+
+    order.setOrderStatus(Constant.OrderStatusEmum.FULFILLED.getCode());
+    order.setEndTime(new Date());
+    orderMapper.updateByPrimaryKeySelective(order);
   }
 
   private Integer getTotalPrice(List<OrderItem> orderItemList) {
