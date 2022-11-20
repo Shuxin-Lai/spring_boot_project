@@ -18,4 +18,6 @@ public interface OrderService {
   PageInfo listForCustomer(Pagination pagination);
 
   void cancel(String orderNo);
+
+  String qrcode(String orderNo);
 }

@@ -29,7 +29,9 @@ public enum ImoocMallExceptionEnum {
   CART_NOT_SELECTED(10022, "商品未选中"),
   NO_ENUM(10023, "枚举不存在"),
   NO_ORDER(10024, "订单不存在"),
-  NOT_YOUR_ORDER(10025, "此订单并非您的"), ORDER_STATUS_ERROR(10026, "订单状态异常");
+  NOT_YOUR_ORDER(10025, "此订单并非您的"),
+  ORDER_STATUS_ERROR(10026, "订单状态异常"),
+  CREATE_QRCODE_FAILED(10027, "创建二维码失败");
 
   public Integer getCode() {
     return code;

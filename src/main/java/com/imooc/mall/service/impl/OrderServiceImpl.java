@@ -2,6 +2,7 @@ package com.imooc.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.zxing.WriterException;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -20,13 +21,23 @@ import com.imooc.mall.model.vo.OrderItemVO;
 import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
+import com.imooc.mall.util.QRCodeGenerator;
 import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
   OrderMapper orderMapper;
   @Autowired
   OrderItemMapper orderItemMapper;
+
+  @Value("${server.baseUrl}")
+  String serverBaseUrl;
 
   @Transactional(rollbackFor = Exception.class)
   @Override
@@ -192,6 +206,22 @@ public class OrderServiceImpl implements OrderService {
     orderMapper.updateByPrimaryKeySelective(order);
   }
 
+  @Override
+  public String qrcode(String orderNo) {
+    checkOrder(orderNo);
+
+    ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    String payUrl = serverBaseUrl + "/pay?orderNo=" + orderNo;
+    try {
+      QRCodeGenerator.generatorQRCodeImage(payUrl, 320, 320,
+          new File(Constant.FILE_UPDATE_DIR, orderNo + ".png").getAbsolutePath());
+    } catch (Exception e) {
+      throw new ImoocException(ImoocMallExceptionEnum.CREATE_QRCODE_FAILED);
+    }
+    String imgUrl = serverBaseUrl + "/images/" + orderNo + ".png";
+    return imgUrl;
+  }
+
   private Integer getTotalPrice(List<OrderItem> orderItemList) {
     int total = 0;
     for (OrderItem orderItem : orderItemList) {
@@ -224,6 +254,34 @@ public class OrderServiceImpl implements OrderService {
     return orderItemList;
   }
 
+  private Order getOrder(String orderNo, boolean checkUser) {
+    Order order = orderMapper.selectByOrderNo(orderNo);
+    if (order == null) {
+      throw new ImoocException(ImoocMallExceptionEnum.NO_ORDER);
+    }
+
+    if (checkUser) {
+      if (!order.getUserId().equals(UserFilter.currentUser.getId())) {
+        throw new ImoocException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+      }
+    }
+
+    return order;
+  }
+
+
+  private boolean checkOrder(String orderNo) {
+    return checkOrder(orderNo, true);
+  }
+
+  private boolean checkOrder(String orderNo, boolean checkUser) {
+    getOrder(orderNo, checkUser);
+    return true;
+  }
+
+  private Order getOrder(String orderNo) {
+    return getOrder(orderNo, true);
+  }
 
   private void validateSaleStatusAndStock(List<CartVO> list) {
     for (CartVO cartVO : list) {

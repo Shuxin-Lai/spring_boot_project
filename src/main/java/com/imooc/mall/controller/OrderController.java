@@ -6,8 +6,11 @@ import com.imooc.mall.model.request.base.Pagination;
 import com.imooc.mall.model.request.order.CreateOrderReq;
 import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.OrderService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 public class OrderController {
@@ -15,7 +18,7 @@ public class OrderController {
   OrderService orderService;
 
   @PostMapping("/order/create")
-  public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq) {
+  public ApiRestResponse create(@Valid @RequestBody CreateOrderReq createOrderReq) {
 
     String orderNo = orderService.create(createOrderReq);
     return ApiRestResponse.success(orderNo);
@@ -37,5 +40,11 @@ public class OrderController {
   public ApiRestResponse cancel(@RequestParam("orderNo") String orderNo) {
     orderService.cancel(orderNo);
     return ApiRestResponse.success();
+  }
+
+  @GetMapping("/order/qrcode")
+  public ApiRestResponse qrcode(@RequestParam("orderNo") String orderNo) {
+    String url = orderService.qrcode(orderNo);
+    return ApiRestResponse.success(url);
   }
 }
