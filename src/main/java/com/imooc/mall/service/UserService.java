@@ -15,4 +15,6 @@ public interface UserService {
     boolean checkAdmin(User user);
 
     User getCurrentUserFromSession();
+
+  User getUserByEmail(String email);
 }

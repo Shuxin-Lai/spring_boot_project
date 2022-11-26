@@ -84,4 +84,10 @@ public class UserServiceImpl implements UserService {
     assert attributes != null;
     return (User) attributes.getRequest().getSession().getAttribute(Constant.IMOOC_MALL_USER);
   }
+
+  @Override
+  public User getUserByEmail(String email) {
+    User user = userMapper.selectByEmail(email);
+    return user;
+  }
 }

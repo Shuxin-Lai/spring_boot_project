@@ -31,7 +31,17 @@ public enum ImoocMallExceptionEnum {
   NO_ORDER(10024, "订单不存在"),
   NOT_YOUR_ORDER(10025, "此订单并非您的"),
   ORDER_STATUS_ERROR(10026, "订单状态异常"),
-  CREATE_QRCODE_FAILED(10027, "创建二维码失败");
+  CREATE_QRCODE_FAILED(10027, "创建二维码失败"),
+  INVALID_EMAIL(10028, "邮箱格式有误!"),
+  EMAIL_EXIST(10029, "邮箱已存在");
+
+  Integer code;
+  String message;
+
+  ImoocMallExceptionEnum(Integer code, String message) {
+    this.code = code;
+    this.message = message;
+  }
 
   public Integer getCode() {
     return code;
@@ -48,12 +58,4 @@ public enum ImoocMallExceptionEnum {
   public void setMessage(String message) {
     this.message = message;
   }
-
-  ImoocMallExceptionEnum(Integer code, String message) {
-    this.code = code;
-    this.message = message;
-  }
-
-  Integer code;
-  String message;
 }

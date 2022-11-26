@@ -27,6 +27,14 @@
     from imooc_mall_user
     where username = #{userName}
   </select>
+  <select id="selectByEmail" resultType="com.imooc.mall.model.pojo.User" parameterType="string">
+    select
+    <include refid="Base_Column_List"></include>
+     from imooc_mall_user
+     where email_address = #{emailAddress}
+     limit 1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from imooc_mall_user
     where id = #{id,jdbcType=INTEGER}

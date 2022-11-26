@@ -5,11 +5,16 @@ import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.pojo.User;
+import com.imooc.mall.service.EmailService;
 import com.imooc.mall.service.UserService;
+import com.imooc.mall.util.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,6 +22,8 @@ import javax.servlet.http.HttpSession;
 public class UserController {
   @Autowired
   UserService userService;
+  @Autowired
+  EmailService emailService;
 
   @GetMapping("/test")
   @ResponseBody
@@ -61,7 +68,7 @@ public class UserController {
   @PostMapping("/admin/login")
   @ResponseBody
   public ApiRestResponse adminLogin(@RequestParam("userName") String userName,
-                               @RequestParam("password") String password, HttpSession session) throws ImoocException {
+                                    @RequestParam("password") String password, HttpSession session) throws ImoocException {
     if (StringUtils.isEmpty(userName)) {
       return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_USER_NAME);
     }
@@ -96,6 +103,23 @@ public class UserController {
   @ResponseBody
   public ApiRestResponse logout(HttpSession session) {
     session.removeAttribute(Constant.IMOOC_MALL_USER);
+    return ApiRestResponse.success();
+  }
+
+  @PostMapping("/user/sendEmail")
+  @ResponseBody
+  public ApiRestResponse sendEmail(@RequestParam String emailAddress) {
+    if (!EmailUtils.isValidEmail(emailAddress)) {
+      throw new ImoocException(ImoocMallExceptionEnum.INVALID_EMAIL);
+    }
+
+    User user = userService.getUserByEmail(emailAddress);
+    if (user != null) {
+      throw new ImoocException(ImoocMallExceptionEnum.EMAIL_EXIST);
+    }
+
+    emailService.sendSimpleEmail(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是：" + "123");
+
     return ApiRestResponse.success();
   }
 }
