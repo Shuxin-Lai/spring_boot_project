@@ -5,6 +5,7 @@ import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.UserMapper;
 import com.imooc.mall.model.pojo.User;
+import com.imooc.mall.service.RedissonService;
 import com.imooc.mall.service.UserService;
 import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,10 @@ import java.security.NoSuchAlgorithmException;
 public class UserServiceImpl implements UserService {
   @Autowired
   UserMapper userMapper;
+
+  @Autowired
+  RedissonService redissonService;
+
 
   @Override
   public User getUser() {
@@ -89,6 +94,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserByEmail(String email) {
     User user = userMapper.selectByEmail(email);
+    return user;
+  }
+
+  public User loginWithJwt(String userName, String password) {
+    User user = login(userName, password);
+//    redissonService.set()
     return user;
   }
 }

@@ -35,7 +35,7 @@ public enum ImoocMallExceptionEnum {
   INVALID_EMAIL(10028, "邮箱格式有误!"),
   EMAIL_EXIST(10029, "邮箱已存在"),
   VALIDATION_CODE_HAS_BEEN_SENT(10030, "验证码已发送, 请勿重复发送"),
-  WRONG_VERFICATION_CODE(10031, "验证码错误");
+  WRONG_VERFICATION_CODE(10031, "验证码错误"), INVALID_TOKEN(10032, "无效 token");
 
   Integer code;
   String message;
