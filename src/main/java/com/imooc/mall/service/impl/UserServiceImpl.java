@@ -46,13 +46,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void register(String userName, String password) throws ImoocException {
+  public void register(String userName, String password, String emailAddress) throws ImoocException {
     User result = this.userMapper.selectByName(userName);
     if (result != null) {
       throw new ImoocException(ImoocMallExceptionEnum.USER_EXISTED);
     }
     User user = new User();
     user.setUsername(userName);
+    user.setEmailAddress(emailAddress);
     try {
       user.setPassword(MD5Utils.getMD5String(password));
     } catch (NoSuchAlgorithmException e) {

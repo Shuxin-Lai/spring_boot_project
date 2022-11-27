@@ -33,7 +33,9 @@ public enum ImoocMallExceptionEnum {
   ORDER_STATUS_ERROR(10026, "订单状态异常"),
   CREATE_QRCODE_FAILED(10027, "创建二维码失败"),
   INVALID_EMAIL(10028, "邮箱格式有误!"),
-  EMAIL_EXIST(10029, "邮箱已存在");
+  EMAIL_EXIST(10029, "邮箱已存在"),
+  VALIDATION_CODE_HAS_BEEN_SENT(10030, "验证码已发送, 请勿重复发送"),
+  WRONG_VERFICATION_CODE(10031, "验证码错误");
 
   Integer code;
   String message;

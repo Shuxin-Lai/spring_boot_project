@@ -5,18 +5,18 @@ import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.pojo.User;
+import com.imooc.mall.model.request.user.RegisterReq;
 import com.imooc.mall.service.EmailService;
 import com.imooc.mall.service.UserService;
+import com.imooc.mall.util.Core;
 import com.imooc.mall.util.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller()
 public class UserController {
@@ -33,18 +33,21 @@ public class UserController {
 
   @PostMapping("/user/register")
   @ResponseBody
-  public ApiRestResponse register(@RequestParam("userName") String userName,
-                                  @RequestParam("password") String password) throws ImoocException {
-    if (StringUtils.isEmpty(userName)) {
-      return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_USER_NAME);
-    }
-    if (StringUtils.isEmpty(password)) {
-      return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_PASSWORD);
-    }
+  public ApiRestResponse register(@Valid @RequestBody RegisterReq registerReq) {
+    String userName = registerReq.getUserName();
+    String password = registerReq.getPassword();
+    String verificationCode = registerReq.getVerificationCode();
+    String email = registerReq.getEmailAddress();
+
     if (password.length() < 6) {
       return ApiRestResponse.error(ImoocMallExceptionEnum.PASSWORD_TOO_SHORT);
     }
-    userService.register(userName, password);
+
+    if (!emailService.validateCode(email, verificationCode)) {
+      throw new ImoocException(ImoocMallExceptionEnum.WRONG_VERFICATION_CODE);
+    }
+
+    userService.register(userName, password, email);
     return ApiRestResponse.success();
   }
 
@@ -118,7 +121,13 @@ public class UserController {
       throw new ImoocException(ImoocMallExceptionEnum.EMAIL_EXIST);
     }
 
-    emailService.sendSimpleEmail(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是：" + "123");
+    String code = Core.validationCode();
+    boolean ok = emailService.saveValidationCodeToRedis(emailAddress, code);
+    if (ok) {
+      emailService.sendSimpleEmail(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是：" + code);
+    } else {
+      throw new ImoocException(ImoocMallExceptionEnum.VALIDATION_CODE_HAS_BEEN_SENT);
+    }
 
     return ApiRestResponse.success();
   }
